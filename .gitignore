@@ -1,0 +1,5 @@
+*.o
+nde
+*.fifo
+*.sh
+*.nix

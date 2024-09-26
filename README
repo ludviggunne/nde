@@ -1,0 +1,11 @@
+##############################
+NDE - Natural Deduction Engine
+##############################
+
+* Commands
+	presume <formula>      Add a new premise
+	assume <formula>       Add a new assumption  
+	apply <rule> <inputs*> Apply a rule on the given inputs
+	open                   Open a new box/subproof
+	close                  Close the current box/subproof
+	

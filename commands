@@ -1,0 +1,9 @@
+presume r
+presume p=>r=>q
+open
+assume p
+apply =>e 3, 2
+apply =>e 1, 4
+apply ^i 5, 1
+close
+apply =>i 3-6
