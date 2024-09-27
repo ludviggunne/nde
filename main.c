@@ -14,6 +14,7 @@
 
 struct termios old, new;
 const char *boxlines = "| | | | | | | | | | | | | | | | | | | | | ";
+const int annotcol = 80;
 
 void term_restore(void)
 {
@@ -41,7 +42,6 @@ char first_non_wspc(const char *str)
 
 void println(const char *prompt, const char *formstr, const char *annot)
 {
-	const int annotcol = 64;
 	printf("%s%s\x1b[%dG%s\n", prompt, formstr, annotcol, annot);
 	fflush(stdout);
 }
@@ -108,10 +108,13 @@ int main(int argc, char **argv)
 		switch (cmd->type) {
 		case CMD_OPEN:
 			push_box(&p);
+			printf(" ---\n");
 			break;
 		case CMD_CLOSE:
 			if (!pop_box(&p))
 				error("no boxes to close");
+			else
+				printf(" ---\n");
 			break;
 		case CMD_PRESUME:
 			pushln(&p, cmd, cmd->lhs);
