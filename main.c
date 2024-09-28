@@ -77,8 +77,8 @@ int main(int argc, char **argv)
 	ndelog("starting NDE\n");
 	for (;;) {
 
-		snprintf(prompt, sizeof(prompt), "%4d. %.*s", p.nlns + 1,
-			 2 * box_depth(&p), boxlines);
+		snprintf(prompt, sizeof(prompt), "%4d. %.*s",
+			 p.nlns + 1, 2 * box_depth(&p), boxlines);
 
 		line = linenoise(prompt);
 		if (!line)
@@ -107,14 +107,20 @@ int main(int argc, char **argv)
 
 		switch (cmd->type) {
 		case CMD_OPEN:
+			memset(prompt, ' ', 5);
+			snprintf(prompt, sizeof(prompt), "      %.*s",
+				 2 * box_depth(&p), boxlines);
+			println(prompt, "", "");
 			push_box(&p);
-			printf(" ---\n");
 			break;
 		case CMD_CLOSE:
 			if (!pop_box(&p))
 				error("no boxes to close");
-			else
-				printf(" ---\n");
+			else {
+				snprintf(prompt, sizeof(prompt), "      %.*s",
+					 2 * box_depth(&p), boxlines);
+				println(prompt, "", "");
+			}
 			break;
 		case CMD_PRESUME:
 			pushln(&p, cmd, cmd->lhs);
@@ -157,8 +163,8 @@ int main(int argc, char **argv)
 	}
 
 	if (!isatty(STDIN_FILENO)) {
-		printf(CLEAR "\x1b[32mThe proof is correct.\x1b[0m");
+		printf(CLEAR "\x1b[32mThe proof is correct.\x1b[0m\n");
 	}
 
-	printf("\n");
+	printf(CLEAR);
 }
