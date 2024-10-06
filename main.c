@@ -63,6 +63,7 @@ int main(int argc, char **argv)
 	char errbuf[1024];
 	struct ast *cmd;
 	struct proof p;
+	FILE *outf;
 
 	// disable echoing
 	(void)tcgetattr(STDIN_FILENO, &old);
@@ -156,13 +157,14 @@ int main(int argc, char **argv)
 			println(prompt, formbuf, cmdbuf);
 			pushcmd(&p, cmd);
 			break;
-		case CMD_UNDO:
-			// TODO: pop boxes when needed
-			// if (p.nlns > 0) {
-			//      p.nlns--;
-			//      printf(CLEAR "\x1b[1A" CLEAR);
-			//      fflush(stdout);
-			// }
+		case CMD_EXPORT:
+			outf = fopen(cmd->text, "w");
+			if (!outf)
+				error("unable to open file for writing");
+			else {
+				export_tex(outf, &p);
+				fclose(outf);
+			}
 			break;
 		}
 		linenoiseFree(line);

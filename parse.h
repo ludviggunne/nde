@@ -15,7 +15,7 @@
 #define CMD_OPEN          (1ul << 8)
 #define CMD_CLOSE         (1ul << 9)
 #define CMD_APPLY         (1ul << 10)
-#define CMD_UNDO          (1ul << 11)
+#define CMD_EXPORT        (1ul << 11)
 #define INPUT_LINE        (1ul << 12)
 #define INPUT_BOX         (1ul << 13)
 #define INPUT_FORM        (1ul << 14)
@@ -38,7 +38,7 @@
 #define RULE_COPY         (1ul << 31)
 
 #define FORM  (FORM_NOT | FORM_AND | FORM_OR | FORM_IMPL | FORM_CON | FORM_NAME)
-#define CMD (CMD_PRESUME | CMD_ASSUME | CMD_OPEN | CMD_CLOSE | CMD_APPLY | CMD_UNDO)
+#define CMD (CMD_PRESUME | CMD_ASSUME | CMD_OPEN | CMD_CLOSE | CMD_APPLY | CMD_EXPORT)
 #define INPUT (INPUT_LINE | INPUT_BOX | INPUT_FORM)
 #define RULE (RULE_NOT_INTR | RULE_NOT_ELIM | RULE_AND_INTR | RULE_AND_ELIM_1 | \
 	RULE_AND_ELIM_2 | RULE_OR_INTR_1 | RULE_OR_INTR_2 | RULE_OR_ELIM | \

@@ -193,6 +193,7 @@ struct ast *parse(const char *text, size_t length, char *errbuf,
 static struct ast *p_cmd(struct pdata *p)
 {
 	struct ast *cmd = NULL, *lhs = NULL, *rhs = NULL;
+	char *text = NULL;
 	int type = -1;
 
 	const char *word = getword(p);
@@ -225,8 +226,12 @@ static struct ast *p_cmd(struct pdata *p)
 		goto done;
 	}
 
-	if (strcmp(word, "undo") == 0) {
-		type = CMD_UNDO;
+	if (strcmp(word, "export") == 0) {
+		type = CMD_EXPORT;
+		text = (char *)getword(p);
+		if (!text)
+			return NULL;
+		text = strdup(text);
 		goto done;
 	}
 
@@ -254,6 +259,7 @@ static struct ast *p_cmd(struct pdata *p)
  done:
 	cmd = calloc(1, sizeof(*cmd));
 	cmd->type = type;
+	cmd->text = text;
 	cmd->lhs = lhs;
 	cmd->rhs = rhs;
 	return cmd;
