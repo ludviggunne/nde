@@ -8,6 +8,7 @@
 #include "proof.h"
 #include "apply.h"
 #include "log.h"
+#include "tex.h"
 
 #define ERROR "\x1b[31merror:\x1b[0m "
 #define CLEAR "\x1b[2K\r"
@@ -112,6 +113,7 @@ int main(int argc, char **argv)
 				 2 * box_depth(&p), boxlines);
 			println(prompt, "", "");
 			push_box(&p);
+			pushcmd(&p, cmd);
 			break;
 		case CMD_CLOSE:
 			if (!pop_box(&p))
@@ -121,11 +123,13 @@ int main(int argc, char **argv)
 					 2 * box_depth(&p), boxlines);
 				println(prompt, "", "");
 			}
+			pushcmd(&p, cmd);
 			break;
 		case CMD_PRESUME:
 			pushln(&p, cmd, cmd->lhs);
 			print_form(cmd->lhs, formbuf, sizeof(formbuf));
 			println(prompt, formbuf, "premise");
+			pushcmd(&p, cmd);
 			break;
 		case CMD_ASSUME:
 			if (!at_beginning_of_box(&p)) {
@@ -136,6 +140,7 @@ int main(int argc, char **argv)
 			pushln(&p, cmd, cmd->lhs);
 			print_form(cmd->lhs, formbuf, sizeof(formbuf));
 			println(prompt, formbuf, "assumption");
+			pushcmd(&p, cmd);
 			break;
 		case CMD_APPLY:
 			if (!apply_rule(&p, cmd)) {
@@ -149,14 +154,15 @@ int main(int argc, char **argv)
 			print_form(p.lns[p.nlns - 1].form, formbuf,
 				   sizeof(formbuf));
 			println(prompt, formbuf, cmdbuf);
+			pushcmd(&p, cmd);
 			break;
 		case CMD_UNDO:
 			// TODO: pop boxes when needed
-			if (p.nlns > 0) {
-				p.nlns--;
-				printf(CLEAR "\x1b[1A" CLEAR);
-				fflush(stdout);
-			}
+			// if (p.nlns > 0) {
+			//      p.nlns--;
+			//      printf(CLEAR "\x1b[1A" CLEAR);
+			//      fflush(stdout);
+			// }
 			break;
 		}
 		linenoiseFree(line);

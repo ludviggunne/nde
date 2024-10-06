@@ -1,5 +1,6 @@
 CC=gcc
-CFLAGS=-Wall -Wextra -Wpedantic -g
+CFLAGS?=
+CFLAGS+=-Wall -Wextra -Wpedantic
 LDFLAGS=
 
 OUT=nde

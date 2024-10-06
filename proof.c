@@ -9,6 +9,8 @@ struct proof new_proof(void)
 	struct proof p = { 0 };
 	p.lncap = 32;
 	p.lns = malloc(p.lncap * sizeof(*p.lns));
+	p.cmdcap = 32;
+	p.allcmds = malloc(p.cmdcap * sizeof(*p.allcmds));
 	return p;
 }
 
@@ -26,111 +28,59 @@ void pushln(struct proof *p, struct ast *cmd, struct ast *form)
 	p->lns[p->nlns++] = ln;
 }
 
+void pushcmd(struct proof *p, struct ast *cmd)
+{
+	if (p->ncmds == p->cmdcap) {
+		p->cmdcap *= 2;
+		p->allcmds =
+		    realloc(p->allcmds, p->cmdcap * sizeof(*p->allcmds));
+	}
+	p->allcmds[p->ncmds++] = cmd;
+}
+
 int can_ref_ln(struct proof *p, int n)
 {
-	return 1;
-	ndelog("checking if line %d can be referenced... ", n);
-
-	struct box *tbox, *fbox;
-
-	if (n < 0 || n >= p->nlns) {
-		ndelog("no!\n");
-		snprintf(p->errbuf, sizeof(p->errbuf), "invalid line number");
+	struct box *inner, *outer;
+	if (n < 0 || n >= p->nlns)
 		return 0;
-	}
 
-	tbox = p->lns[n].box;
-	if (!tbox) {
-		ndelog("yes!\n");
+	outer = p->lns[n].box;
+	if (!outer)
 		return 1;
-	}
 
-	fbox = p->boxhead;
+	inner = p->boxhead;
 
-	while (tbox) {
-		if (fbox == tbox) {
-			ndelog("yes!\n");
+	while (inner) {
+		if (inner == outer)
 			return 1;
-		}
-		tbox = tbox->parent;
+		inner = inner->parent;
 	}
 
-	ndelog("no!\n");
-	snprintf(p->errbuf, sizeof(p->errbuf), "illegal box reference");
 	return 0;
 }
 
 int can_ref_box(struct proof *p, int start, int end)
 {
-	return 1;
-	struct box *tbox, *fbox;
-
-	ndelog("there are %d lines\n", p->nlns);
-	ndelog("checking if box with range %d-%d can be referenced...\n", start,
-	       end);
-
-	if (start < 0 || start >= p->nlns || end < 0
-	    || end >= p->nlns || end <= start) {
-		ndelog("no!\n");
-		snprintf(p->errbuf, sizeof(p->errbuf),
-			 "invalid line number(s)");
+	struct box *box, *inner, *outer;
+	if (start < 0 || end >= p->nlns || end <= start)
 		return 0;
-	}
 
-	tbox = p->lns[start].box;
-
-	if (tbox->end < 0) {
-		ndelog("no!\n");
-		snprintf(p->errbuf, sizeof(p->errbuf), "box not closed");
+	box = get_box_with_range(p, start, end);
+	if (!box)
 		return 0;
-	}
 
-	while (tbox) {
-		ndelog("matching with box %d-%d\n", tbox->start, tbox->end);
-		if (tbox->start == start && tbox->end == end)
-			break;
-		tbox = tbox->parent;
-	}
-
-	if (!tbox) {
-		ndelog("no!\n");
-		snprintf(p->errbuf, sizeof(p->errbuf),
-			 "no box matches specified range");
-		return 0;
-	}
-
-	tbox = tbox->parent;
-	if (!tbox) {
-		ndelog("yes!\n");
+	outer = box->parent;
+	if (!outer)
 		return 1;
-	}
 
-	ndelog("tbox is %d-%d\n", tbox->start, tbox->end);
+	inner = p->boxhead;
 
-	fbox = p->boxhead;
-
-	struct box *orig = tbox;
-
-	while (tbox) {
-		if (fbox == tbox) {
-			ndelog("yes!\n");
+	while (inner) {
+		if (inner == outer)
 			return 1;
-		}
-		tbox = tbox->parent;
+		inner = inner->parent;
 	}
 
-	tbox = orig;
-
-	while (fbox) {
-		if (tbox == fbox) {
-			ndelog("yes!\n");
-			return 1;
-		}
-		fbox = fbox->parent;
-	}
-
-	ndelog("no!\n");
-	snprintf(p->errbuf, sizeof(p->errbuf), "illegal box reference");
 	return 0;
 }
 

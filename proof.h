@@ -19,12 +19,16 @@ struct proof {
 	struct ln *lns;
 	int nlns;
 	int lncap;
+	struct ast **allcmds;
+	int ncmds;
+	int cmdcap;
 	struct box *boxhead;
 	char errbuf[512];
 };
 
 struct proof new_proof(void);
 void pushln(struct proof *p, struct ast *cmd, struct ast *form);
+void pushcmd(struct proof *p, struct ast *cmd);
 int box_depth(struct proof *p);
 void push_box(struct proof *p);
 int pop_box(struct proof *p);

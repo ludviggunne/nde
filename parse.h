@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 
+// TODO: dont use flags
 #define FORM_NOT          (1ul << 0)
 #define FORM_AND          (1ul << 1)
 #define FORM_OR           (1ul << 2)
