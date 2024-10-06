@@ -80,7 +80,7 @@ int main(int argc, char **argv)
 	for (;;) {
 
 		snprintf(prompt, sizeof(prompt), "%4d. %.*s",
-			 p.nlns + 1, 2 * box_depth(&p), boxlines);
+			 p.nlns + 1, 2 * box_depth(p.boxhead), boxlines);
 
 		line = linenoise(prompt);
 		if (!line)
@@ -111,7 +111,7 @@ int main(int argc, char **argv)
 		case CMD_OPEN:
 			memset(prompt, ' ', 5);
 			snprintf(prompt, sizeof(prompt), "      %.*s",
-				 2 * box_depth(&p), boxlines);
+				 2 * box_depth(p.boxhead), boxlines);
 			println(prompt, "", "");
 			push_box(&p);
 			pushcmd(&p, cmd);
@@ -121,7 +121,7 @@ int main(int argc, char **argv)
 				error("no boxes to close");
 			else {
 				snprintf(prompt, sizeof(prompt), "      %.*s",
-					 2 * box_depth(&p), boxlines);
+					 2 * box_depth(p.boxhead), boxlines);
 				println(prompt, "", "");
 			}
 			pushcmd(&p, cmd);

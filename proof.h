@@ -29,7 +29,7 @@ struct proof {
 struct proof new_proof(void);
 void pushln(struct proof *p, struct ast *cmd, struct ast *form);
 void pushcmd(struct proof *p, struct ast *cmd);
-int box_depth(struct proof *p);
+int box_depth(struct box *b);
 void push_box(struct proof *p);
 int pop_box(struct proof *p);
 int can_ref_ln(struct proof *p, int n);

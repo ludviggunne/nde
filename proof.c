@@ -84,10 +84,9 @@ int can_ref_box(struct proof *p, int start, int end)
 	return 0;
 }
 
-int box_depth(struct proof *p)
+int box_depth(struct box *b)
 {
 	int c;
-	struct box *b = p->boxhead;
 	for (c = 0; b; b = b->parent, c++) ;
 	return c;
 }

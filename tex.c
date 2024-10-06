@@ -8,7 +8,7 @@ const char *preamble =
 "\\usepackage{logicproof}\n"
 "\\usepackage{amssymb}\n"
 "\\begin{document}\n"
-"\\begin{logicproof}{2}\n";
+"\\begin{logicproof}{%d}\n";
 
 const char *postamble =
 "\\end{logicproof}\n"
@@ -20,6 +20,7 @@ static int printform(FILE * f, struct ast *form, int);
 static int printcmd(FILE * f, struct ast *cmd);
 static int printinps(FILE * f, struct ast *inps);
 static int prec(int type);
+static int get_max_depth(struct proof *p);
 
 int export_tex(FILE *f, struct proof *p)
 {
@@ -27,7 +28,7 @@ int export_tex(FILE *f, struct proof *p)
 	struct ast *cmd;
 	int last_was_ln = 0;
 
-	fprintf(f, "%s", preamble);
+	fprintf(f, preamble, get_max_depth(p) + 1);
 
 	ln = &p->lns[0];
 
@@ -233,4 +234,15 @@ static int printinps(FILE *f, struct ast *inps)
 			break;
 	}
 	return 1;
+}
+
+static int get_max_depth(struct proof *p)
+{
+	int max = 0, d;
+	for (int i = 0; i < p->nlns; i++) {
+		d = box_depth(p->lns[i].box);
+		if (d > max)
+			max = d;
+	}
+	return d;
 }
