@@ -8,4 +8,5 @@ NDE - Natural Deduction Engine
 	apply <rule> <inputs*> Apply a rule on the given inputs
 	open                   Open a new box/subproof
 	close                  Close the current box/subproof
+	export <filename>      Export as LaTex
 	
