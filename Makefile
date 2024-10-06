@@ -13,7 +13,7 @@ BINDIR=$(PREFIX)/bin
 $(OUT): $(OBJ)
 	$(CC) $(LDFLAGS) -o $@ $^
 
-%.o: %.c
+%.o: %.c syntax.h
 	$(CC) $(CFLAGS) -o $@ -c $<
 
 install:
