@@ -10,7 +10,8 @@
 #include "log.h"
 #include "tex.h"
 
-#define ERROR "\x1b[31merror:\x1b[0m "
+#define ERROR "    \x1b[31merror:\x1b[0m "
+#define OK "    \x1b[32mok:\x1b[0m "
 #define CLEAR "\x1b[2K\r"
 
 struct termios old, new;
@@ -25,6 +26,18 @@ void term_restore(void)
 void error(const char *msg)
 {
 	printf(ERROR "%s", msg);
+	if (!isatty(STDIN_FILENO)) {
+		printf("\n");
+		exit(1);
+	}
+	(void)fgetc(stdin);
+	printf(CLEAR);
+	fflush(stdout);
+}
+
+void msg(const char *msg)
+{
+	printf(OK "%s", msg);
 	if (!isatty(STDIN_FILENO)) {
 		printf("\n");
 		exit(1);
@@ -164,6 +177,10 @@ int main(int argc, char **argv)
 			else {
 				export_tex(outf, &p);
 				fclose(outf);
+				snprintf(errbuf, sizeof(errbuf),
+					 "successfully exported to %s",
+					 cmd->text);
+				msg(errbuf);
 			}
 			break;
 		}
@@ -171,7 +188,7 @@ int main(int argc, char **argv)
 	}
 
 	if (!isatty(STDIN_FILENO)) {
-		printf(CLEAR "\x1b[32mThe proof is correct.\x1b[0m\n");
+		printf(CLEAR OK "the proof is correct.\n");
 	}
 
 	printf(CLEAR);
