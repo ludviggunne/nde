@@ -77,7 +77,7 @@ static int println(FILE *f, struct ln *ln, int last_was_ln)
 static int printform(FILE *f, struct ast *form, int parentprec)
 {
 	int p = prec(form->type);
-	if (p < parentprec)
+	if (p <= parentprec)
 		fprintf(f, "(");
 
 	switch (form->type) {
@@ -110,7 +110,7 @@ static int printform(FILE *f, struct ast *form, int parentprec)
 		assert(0 && "invalid form type");
 	}
 
-	if (p < parentprec)
+	if (p <= parentprec)
 		fprintf(f, ")");
 
 	return 1;
