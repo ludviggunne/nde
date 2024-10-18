@@ -268,7 +268,7 @@ static struct ast *p_cmd(struct pdata *p)
 static struct ast *p_rule(struct pdata *p)
 {
 	struct ast *rule = NULL;
-	long int type = -1;
+	int type = -1;
 	const char *word;
 
 	word = getword(p);
@@ -613,7 +613,7 @@ void ast_destroy(struct ast *ast)
 
 size_t print_form(struct ast *form, char *buf, size_t s)
 {
-	assert(form->type & FORM);
+	assert(is_form(form->type));
 
 	char lbuf[64], rbuf[64];
 
@@ -644,7 +644,7 @@ size_t print_form(struct ast *form, char *buf, size_t s)
 	}
 }
 
-static const char *rulestr(long int r)
+static const char *rulestr(int r)
 {
 	switch (r) {
 	case RULE_NOT_INTR:
@@ -691,7 +691,7 @@ static size_t print_inp(struct ast *inp, char *buf, size_t s)
 	char ibuf[s];
 	char fbuf[s];
 
-	assert(inp->type & INPUT);
+	assert(is_input(inp->type));
 
 	if (inp->rhs)
 		print_inp(inp->rhs, ibuf, s);

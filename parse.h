@@ -3,50 +3,110 @@
 
 #include <stddef.h>
 
-// TODO: dont use flags
-#define FORM_NOT          (1ul << 0)
-#define FORM_AND          (1ul << 1)
-#define FORM_OR           (1ul << 2)
-#define FORM_IMPL         (1ul << 3)
-#define FORM_CON          (1ul << 4)
-#define FORM_NAME         (1ul << 5)
-#define CMD_PRESUME       (1ul << 6)
-#define CMD_ASSUME        (1ul << 7)
-#define CMD_OPEN          (1ul << 8)
-#define CMD_CLOSE         (1ul << 9)
-#define CMD_APPLY         (1ul << 10)
-#define CMD_EXPORT        (1ul << 11)
-#define INPUT_LINE        (1ul << 12)
-#define INPUT_BOX         (1ul << 13)
-#define INPUT_FORM        (1ul << 14)
-#define RULE_NOT_INTR     (1ul << 15)
-#define RULE_NOT_ELIM     (1ul << 16)
-#define RULE_AND_INTR     (1ul << 17)
-#define RULE_AND_ELIM_1   (1ul << 18)
-#define RULE_AND_ELIM_2   (1ul << 19)
-#define RULE_OR_INTR_1    (1ul << 20)
-#define RULE_OR_INTR_2    (1ul << 21)
-#define RULE_OR_ELIM      (1ul << 22)
-#define RULE_IMPL_INTR    (1ul << 23)
-#define RULE_IMPL_ELIM    (1ul << 24)
-#define RULE_CON_ELIM     (1ul << 25)
-#define RULE_NOT_NOT_INTR (1ul << 26)
-#define RULE_NOT_NOT_ELIM (1ul << 27)
-#define RULE_MT           (1ul << 28)
-#define RULE_PBC          (1ul << 29)
-#define RULE_LEM          (1ul << 30)
-#define RULE_COPY         (1ul << 31)
+enum {
+	FORM_NOT,
+	FORM_AND,
+	FORM_OR,
+	FORM_IMPL,
+	FORM_CON,
+	FORM_NAME,
+	CMD_PRESUME,
+	CMD_ASSUME,
+	CMD_OPEN,
+	CMD_CLOSE,
+	CMD_APPLY,
+	CMD_EXPORT,
+	INPUT_LINE,
+	INPUT_BOX,
+	INPUT_FORM,
+	RULE_NOT_INTR,
+	RULE_NOT_ELIM,
+	RULE_AND_INTR,
+	RULE_AND_ELIM_1,
+	RULE_AND_ELIM_2,
+	RULE_OR_INTR_1,
+	RULE_OR_INTR_2,
+	RULE_OR_ELIM,
+	RULE_IMPL_INTR,
+	RULE_IMPL_ELIM,
+	RULE_CON_ELIM,
+	RULE_NOT_NOT_INTR,
+	RULE_NOT_NOT_ELIM,
+	RULE_MT,
+	RULE_PBC,
+	RULE_LEM,
+	RULE_COPY,
+};
 
-#define FORM  (FORM_NOT | FORM_AND | FORM_OR | FORM_IMPL | FORM_CON | FORM_NAME)
-#define CMD (CMD_PRESUME | CMD_ASSUME | CMD_OPEN | CMD_CLOSE | CMD_APPLY | CMD_EXPORT)
-#define INPUT (INPUT_LINE | INPUT_BOX | INPUT_FORM)
-#define RULE (RULE_NOT_INTR | RULE_NOT_ELIM | RULE_AND_INTR | RULE_AND_ELIM_1 | \
-	RULE_AND_ELIM_2 | RULE_OR_INTR_1 | RULE_OR_INTR_2 | RULE_OR_ELIM | \
-	RULE_IMPL_INTR | RULE_IMPL_ELIM | RULE_CON_ELIM | RULE_NOT_NOT_INTR | \
-	RULE_NOT_NOT_ELIM | RULE_MT | RULE_PBC | RULE_LEM)
+static inline int is_form(int type)
+{
+	switch (type) {
+	case FORM_NOT:
+	case FORM_AND:
+	case FORM_OR:
+	case FORM_IMPL:
+	case FORM_CON:
+	case FORM_NAME:
+		return 1;
+	default:
+		return 0;
+	}
+}
+
+static inline int is_cmd(int type)
+{
+	switch (type) {
+	case CMD_PRESUME:
+	case CMD_ASSUME:
+	case CMD_OPEN:
+	case CMD_CLOSE:
+	case CMD_APPLY:
+	case CMD_EXPORT:
+		return 1;
+	default:
+		return 0;
+	}
+}
+
+static inline int is_input(int type)
+{
+	switch (type) {
+	case INPUT_LINE:
+	case INPUT_BOX:
+	case INPUT_FORM:
+		return 1;
+	default:
+		return 0;
+	}
+}
+
+static inline int is_rule(int type)
+{
+	switch (type) {
+	case RULE_NOT_INTR:
+	case RULE_NOT_ELIM:
+	case RULE_AND_INTR:
+	case RULE_AND_ELIM_1:
+	case RULE_AND_ELIM_2:
+	case RULE_OR_INTR_1:
+	case RULE_OR_INTR_2:
+	case RULE_OR_ELIM:
+	case RULE_IMPL_INTR:
+	case RULE_IMPL_ELIM:
+	case RULE_CON_ELIM:
+	case RULE_NOT_NOT_INTR:
+	case RULE_NOT_NOT_ELIM:
+	case RULE_MT:
+	case RULE_PBC:
+	case RULE_LEM:
+		return 1;
+	default:
+		return 0;
+	}
+}
 
 struct ast {
-	long int type;
+	int type;
 	char *text;
 	struct ast *lhs;
 	struct ast *rhs;
