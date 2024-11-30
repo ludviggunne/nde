@@ -244,5 +244,5 @@ static int get_max_depth(struct proof *p)
 		if (d > max)
 			max = d;
 	}
-	return d;
+	return max;
 }
